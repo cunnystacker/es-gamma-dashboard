@@ -1,0 +1,4 @@
+Massive keys and info
+
+For SPX options, make sure you're using the correct endpoint format with the "I:" prefix: GET
+https://api.massive.com/v3/snapshot/options/I:SPX
