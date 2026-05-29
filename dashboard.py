@@ -5,9 +5,11 @@ from datetime import datetime, timedelta
 import time
 import numpy as np
 
-st.set_page_config(page_title="/ES Gamma Dashboard", layout="wide")
-st.title("🧮 /ES Real-Time Gamma Exposure Dashboard")
-st.write("**Tier1 Alpha + Barchart Manual Input**")
+st.set_page_config(page_title="SPX Dealer Gamma Monitor", layout="wide")
+
+# ====================== HEADER ======================
+st.title("SPX Dealer Gamma Monitor for /ES Trading")
+st.markdown("**Gamma levels derived from SPX options chain (primary dealer hedging instrument)**")
 
 # ====================== QUICK LINKS ======================
 st.subheader("Quick Data Sources")
@@ -20,8 +22,6 @@ with col_a:
 with col_b:
     if st.button("📈 Open Tier1 Alpha", use_container_width=True):
         st.markdown("[Tier1 Alpha Dashboard](https://tier1alpha.com)")
-
-st.caption("Use Tier1 Alpha as primary → Cross-check with Barchart")
 
 # ====================== LIVE PRICE ======================
 st.sidebar.header("Live Market Data")
@@ -57,11 +57,11 @@ total_gex_full = total_gex * 1_000_000
 st.subheader("Dealer Offsides Strength (Quantitative)")
 
 if total_gex_full < -1500000000:
-    st.error(f"🔴 **EXTREME SHORT GAMMA** ({total_gex}M)")
+    st.error(f"🔴 **EXTREME SHORT GAMMA** ({total_gex}M) — Heavy reversal risk to the downside")
 elif total_gex_full < -600000000:
-    st.warning(f"🟠 **SIGNIFICANT SHORT GAMMA** ({total_gex}M)")
+    st.warning(f"🟠 **SIGNIFICANT SHORT GAMMA** ({total_gex}M) — Downside pressure building")
 elif total_gex_full > 1500000000:
-    st.success(f"🟢 **EXTREME LONG GAMMA** (+{total_gex}M)")
+    st.success(f"🟢 **EXTREME LONG GAMMA** (+{total_gex}M) — Strong stabilizing regime")
 elif total_gex_full > 600000000:
     st.success(f"🟢 **STRONG LONG GAMMA** (+{total_gex}M)")
 else:
@@ -97,7 +97,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-st.caption("**Green Line = SPX Price** | Update numbers from Tier1 Alpha or Barchart")
+st.caption("**Green Line = SPX Price** | Horizontal lines = Gamma Key Levels | Monitor for dealer offsides")
 
 if auto_refresh:
     time.sleep(15)
