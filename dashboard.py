@@ -7,23 +7,20 @@ import numpy as np
 
 st.set_page_config(page_title="SPX Dealer Gamma Monitor", layout="wide")
 
-# ====================== HEADER ======================
 st.title("SPX Dealer Gamma Monitor for /ES Trading")
 st.markdown("**Gamma levels derived from SPX options chain (primary dealer hedging instrument)**")
 
-# ====================== QUICK LINKS ======================
+# Quick Links
 st.subheader("Quick Data Sources")
 col_a, col_b = st.columns(2)
-
 with col_a:
     if st.button("📊 Open Barchart $SPX Gamma Exposure", use_container_width=True):
         st.markdown("[Barchart GEX](https://www.barchart.com/stocks/quotes/%24SPX/gamma-exposure)")
-
 with col_b:
     if st.button("📈 Open Tier1 Alpha", use_container_width=True):
         st.markdown("[Tier1 Alpha Dashboard](https://tier1alpha.com)")
 
-# ====================== LIVE PRICE ======================
+# Live Price
 st.sidebar.header("Live Market Data")
 auto_refresh = st.sidebar.checkbox("Auto-refresh every 15s", value=True)
 
@@ -40,8 +37,8 @@ spot = st.sidebar.number_input("Manual /ES Spot Price",
                               value=st.session_state.get('live_price', 7603.75), 
                               step=1.0)
 
-# ====================== MANUAL INPUTS ======================
-st.subheader("Update Dealer GEX Numbers")
+# Manual Inputs
+st.subheader("Update Dealer GEX Numbers (from Tier1 Alpha / Barchart)")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -53,21 +50,33 @@ with col2:
 
 total_gex_full = total_gex * 1_000_000
 
-# ====================== OFFSIDES ======================
-st.subheader("Dealer Offsides Strength (Quantitative)")
+# ====================== IMPROVED OFFSIDES SECTION ======================
+st.subheader("Dealer Offsides & Expected Hedging Flow")
 
 if total_gex_full < -1500000000:
-    st.error(f"🔴 **EXTREME SHORT GAMMA** ({total_gex}M) — Heavy reversal risk to the downside")
+    st.error(f"🔴 **EXTREME SHORT GAMMA** ({total_gex}M)\n\n"
+             "Dealers are heavily offsides negative. Strong forced **buying** expected on dips. "
+             "High reversal risk if price continues lower.")
+    
 elif total_gex_full < -600000000:
-    st.warning(f"🟠 **SIGNIFICANT SHORT GAMMA** ({total_gex}M) — Downside pressure building")
+    st.warning(f"🟠 **SIGNIFICANT SHORT GAMMA** ({total_gex}M)\n\n"
+               "Dealers increasingly offsides negative. Downside volatility likely to increase. "
+               "Watch for forced buying flows.")
+    
 elif total_gex_full > 1500000000:
-    st.success(f"🟢 **EXTREME LONG GAMMA** (+{total_gex}M) — Strong stabilizing regime")
+    st.success(f"🟢 **EXTREME LONG GAMMA** (+{total_gex}M)\n\n"
+               "Dealers heavily offsides positive. Strong stabilizing regime. "
+               "Expect pinning and grinding higher.")
+    
 elif total_gex_full > 600000000:
-    st.success(f"🟢 **STRONG LONG GAMMA** (+{total_gex}M)")
+    st.success(f"🟢 **STRONG LONG GAMMA** (+{total_gex}M)\n\n"
+               "Dealers offsides positive. Market likely to remain supported.")
+    
 else:
-    st.info(f"⚖️ **NEUTRAL** ({total_gex}M)")
+    st.info(f"⚖️ **NEUTRAL GAMMA** ({total_gex}M)\n\n"
+            "No strong dealer bias. Normal two-way price action expected.")
 
-# ====================== CHART ======================
+# Chart
 st.subheader("SPX Price with Gamma Key Levels")
 
 now = datetime.now()
@@ -97,7 +106,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-st.caption("**Green Line = SPX Price** | Horizontal lines = Gamma Key Levels | Monitor for dealer offsides")
+st.caption("**Green Line = SPX Price** | Monitor dealer offsides for forced hedging flows in /ES")
 
 if auto_refresh:
     time.sleep(15)

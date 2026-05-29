@@ -2,3 +2,28 @@ Massive keys and info
 
 For SPX options, make sure you're using the correct endpoint format with the "I:" prefix: GET
 https://api.massive.com/v3/snapshot/options/I:SPX
+
+
+notepad dashboard.py
+
+streamlit run dashboard.py
+
+
+
+.venv\Scripts\Activate.ps1 
+
+
+cd "C:\Users\cunny\OneDrive\Desktop\GEX Calculator"
+
+Run the .veny script on first run of day before running "dashboard" script.
+
+https://www.cboe.com/markets/us/options/market-statistics/most-active
+
+I want to know when dealers are offsides with their gamma positions so I can anticipate when they will need to buy or sell futures in real time — especially to catch reversals
+
+When I lose the "share" button on app do this:
+
+cd "C:\Users\cunny\OneDrive\Desktop\GEX Calculator"
+git add .
+git commit -m "Updated dashboard"
+git push
